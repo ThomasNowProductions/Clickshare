@@ -47,6 +47,7 @@ body {
   font-family: var(--font-sans);
   line-height: 1.4;
   letter-spacing: -0.02em;
+  -webkit-text-size-adjust: 100%;
 }
 
 h1, h2, h3 {
@@ -63,7 +64,7 @@ h1, h2, h3 {
 }
 
 .display-text {
-  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-size: clamp(2rem, 6vw, 5rem);
   font-weight: 800;
   letter-spacing: -0.05em;
   line-height: 0.95;
@@ -79,6 +80,48 @@ h1, h2, h3 {
   font-size: 0.75rem;
   letter-spacing: 0;
   text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .display-text {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .display-text {
+    font-size: clamp(1.75rem, 7vw, 3rem);
+  }
+}
+
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+@media (hover: none) {
+  .touch-manipulation:active {
+    transform: scale(0.98);
+  }
+}
+
+input, textarea, select {
+  font-size: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+@media (max-width: 480px) {
+  input, textarea, select {
+    font-size: 14px;
+  }
+}
+
+input::placeholder, textarea::placeholder {
+  opacity: 1;
+}
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
 }
 
 @keyframes glitch {

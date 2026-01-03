@@ -16,7 +16,14 @@ export default function BusinessCard() {
   const [loading, setLoading] = useState(true)
   const [showQR, setShowQR] = useState(false)
   const [editLinkCopied, setEditLinkCopied] = useState(false)
+  const [origin, setOrigin] = useState('')
+  const [currentUrl, setCurrentUrl] = useState('')
   const slug = params.slug as string
+
+  useEffect(() => {
+    setOrigin(window.location.origin)
+    setCurrentUrl(window.location.href)
+  }, [])
 
   useEffect(() => {
     async function fetchProfile() {
@@ -52,7 +59,7 @@ export default function BusinessCard() {
 
   const copyEditLink = () => {
     if (!profile?.edit_token) return
-    const editLink = `${window.location.origin}/edit?token=${profile.edit_token}`
+    const editLink = `${origin}/edit?token=${profile.edit_token}`
     navigator.clipboard.writeText(editLink)
     setEditLinkCopied(true)
     setTimeout(() => setEditLinkCopied(false), 2000)
@@ -123,19 +130,19 @@ END:VCARD`
   const socialLinks = profile.social_links || {}
 
   return (
-    <div className="min-h-screen py-12 px-4">
+    <div className="min-h-screen py-6 px-3 md:py-12 md:px-4">
       <div className="max-w-md mx-auto">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm mono text-foreground/40 hover:text-foreground transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-xs md:text-sm mono text-foreground/40 hover:text-foreground transition-colors mb-6 md:mb-8"
         >
           <span className="w-8 h-8 border border-foreground/20 flex items-center justify-center">←</span>
           <span>BACK</span>
         </Link>
 
         <div className="border-2 border-foreground bg-card">
-          <div className="h-32 bg-foreground/5 flex items-end p-6">
-            <div className="w-20 h-20 rounded-full border-4 border-background bg-foreground/10 -mb-10 overflow-hidden">
+          <div className="h-28 md:h-32 bg-foreground/5 flex items-end p-4 md:p-6">
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-background bg-foreground/10 -mb-8 md:-mb-10 overflow-hidden">
               {profile.profile_image ? (
                 <img
                   src={profile.profile_image}
@@ -143,41 +150,41 @@ END:VCARD`
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-3xl font-bold">
+                <div className="w-full h-full flex items-center justify-center text-2xl md:text-3xl font-bold">
                   {profile.full_name.charAt(0)}
                 </div>
               )}
             </div>
           </div>
 
-          <div className="pt-14 px-6 pb-6">
-            <h1 className="text-3xl font-black tracking-tight mb-1">{profile.full_name}</h1>
-            <p className="text-lg text-foreground/60 mb-1">{profile.job_title}</p>
+          <div className="pt-10 md:pt-14 px-4 md:px-6 pb-4 md:pb-6">
+            <p className="text-2xl md:text-3xl font-black tracking-tight mb-1">{profile.full_name}</p>
+            <p className="text-base md:text-lg text-foreground/60 mb-1">{profile.job_title}</p>
             {profile.company && (
-              <p className="text-sm mono text-accent">{profile.company}</p>
+              <p className="text-xs md:text-sm mono text-accent">{profile.company}</p>
             )}
 
             {profile.bio && (
-              <p className="mt-6 text-foreground/70 leading-relaxed border-l-2 border-foreground/20 pl-4">
+              <p className="mt-4 md:mt-6 text-sm md:text-base text-foreground/70 leading-relaxed border-l-2 border-foreground/20 pl-3 md:pl-4">
                 {profile.bio}
               </p>
             )}
 
-            <div className="mt-8 space-y-3">
+            <div className="mt-6 md:mt-8 space-y-2">
               <a
                 href={`mailto:${profile.email}`}
-                className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
               >
-                <Mail className="w-5 h-5" />
-                <span className="font-medium">{profile.email}</span>
+                <Mail className="w-5 h-5 flex-shrink-0" />
+                <span className="font-medium text-sm md:text-base break-all">{profile.email}</span>
               </a>
 
               <a
                 href={`tel:${profile.phone}`}
-                className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
               >
-                <Phone className="w-5 h-5" />
-                <span className="font-medium">{profile.phone}</span>
+                <Phone className="w-5 h-5 flex-shrink-0" />
+                <span className="font-medium text-sm md:text-base">{profile.phone}</span>
               </a>
 
               {profile.website && (
@@ -185,10 +192,10 @@ END:VCARD`
                   href={profile.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <Globe className="w-5 h-5" />
-                  <span className="font-medium truncate">{profile.website.replace(/^https?:\/\//, '')}</span>
+                  <Globe className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base truncate">{profile.website.replace(/^https?:\/\//, '')}</span>
                 </a>
               )}
 
@@ -197,10 +204,10 @@ END:VCARD`
                   href={socialLinks.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <Linkedin className="w-5 h-5" />
-                  <span className="font-medium">LinkedIn</span>
+                  <Linkedin className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base">LinkedIn</span>
                 </a>
               )}
               {socialLinks.twitter && (
@@ -208,10 +215,10 @@ END:VCARD`
                   href={socialLinks.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <Twitter className="w-5 h-5" />
-                  <span className="font-medium">Twitter</span>
+                  <Twitter className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base">Twitter</span>
                 </a>
               )}
               {socialLinks.github && (
@@ -219,10 +226,10 @@ END:VCARD`
                   href={socialLinks.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <Github className="w-5 h-5" />
-                  <span className="font-medium">GitHub</span>
+                  <Github className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base">GitHub</span>
                 </a>
               )}
               {socialLinks.instagram && (
@@ -230,10 +237,10 @@ END:VCARD`
                   href={socialLinks.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <Instagram className="w-5 h-5" />
-                  <span className="font-medium">Instagram</span>
+                  <Instagram className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base">Instagram</span>
                 </a>
               )}
               {socialLinks.mastodon && (
@@ -241,10 +248,10 @@ END:VCARD`
                   href={socialLinks.mastodon}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <MessageCircle className="w-5 h-5" />
-                  <span className="font-medium">Mastodon</span>
+                  <MessageCircle className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base">Mastodon</span>
                 </a>
               )}
               {socialLinks.bluesky && (
@@ -252,10 +259,10 @@ END:VCARD`
                   href={socialLinks.bluesky}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <Globe className="w-5 h-5" />
-                  <span className="font-medium">Bluesky</span>
+                  <Globe className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base">Bluesky</span>
                 </a>
               )}
               {socialLinks.whatsapp && (
@@ -263,10 +270,10 @@ END:VCARD`
                   href={socialLinks.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <MessageSquare className="w-5 h-5" />
-                  <span className="font-medium">WhatsApp</span>
+                  <MessageSquare className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base">WhatsApp</span>
                 </a>
               )}
               {socialLinks.signal && (
@@ -274,10 +281,10 @@ END:VCARD`
                   href={socialLinks.signal}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <Send className="w-5 h-5" />
-                  <span className="font-medium">Signal</span>
+                  <Send className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base">Signal</span>
                 </a>
               )}
               {socialLinks.telegram && (
@@ -285,55 +292,55 @@ END:VCARD`
                   href={socialLinks.telegram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                  className="flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-foreground/5 hover:bg-foreground/10 transition-colors rounded-lg touch-manipulation"
                 >
-                  <Send className="w-5 h-5" />
-                  <span className="font-medium">Telegram</span>
+                  <Send className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm md:text-base">Telegram</span>
                 </a>
               )}
             </div>
 
-            <div className="flex gap-2 mt-6">
+            <div className="flex gap-2 mt-4 md:mt-6">
               <button
                 onClick={downloadVCard}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-4 bg-foreground text-background font-bold hover:bg-accent hover:text-foreground transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-4 md:px-4 md:py-4 bg-foreground text-background font-bold text-sm hover:bg-accent hover:text-foreground transition-colors"
               >
                 <Download className="w-4 h-4" />
                 <span>SAVE</span>
               </button>
               <button
                 onClick={shareCard}
-                className="px-5 py-4 bg-foreground/10 font-bold hover:bg-foreground hover:text-background transition-colors"
+                className="px-4 py-4 md:px-5 md:py-4 bg-foreground/10 font-bold hover:bg-foreground hover:text-background transition-colors"
               >
                 <Share2 className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setShowQR(!showQR)}
-                className={`px-5 py-4 font-bold transition-colors ${showQR ? 'bg-accent text-foreground' : 'bg-foreground/10 hover:bg-foreground hover:text-background'}`}
+                className={`px-4 py-4 md:px-5 md:py-4 font-bold transition-colors ${showQR ? 'bg-accent text-foreground' : 'bg-foreground/10 hover:bg-foreground hover:text-background'}`}
               >
                 QR
               </button>
             </div>
 
             {editToken && (
-              <div className="mt-6 p-4 bg-accent/10 border-2 border-accent">
-                <div className="flex items-center gap-2 mb-3">
+              <div className="mt-4 md:mt-6 p-3 md:p-4 bg-accent/10 border-2 border-accent rounded-lg">
+                <div className="flex items-center gap-2 mb-2 md:mb-3">
                   <Lock className="w-4 h-4 text-foreground" />
-                  <span className="font-bold text-sm">YOUR SECRET EDIT LINK</span>
+                  <span className="font-bold text-xs md:text-sm">YOUR SECRET EDIT LINK</span>
                 </div>
-                <p className="text-xs text-foreground/70 mb-3 mono">
-                  {`${window.location.origin}/edit?token=${editToken}`}
+                <p className="text-xs mono text-foreground/70 mb-3 break-all">
+                  {`${origin}/edit?token=${editToken}`}
                 </p>
                 <div className="flex gap-2">
                   <button
                     onClick={copyEditLink}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-accent text-foreground font-bold hover:opacity-90 transition-opacity text-sm"
+                    className="flex-1 flex items-center justify-center gap-2 px-3 py-3 md:px-4 md:py-3 bg-accent text-foreground font-bold hover:opacity-90 transition-opacity text-xs md:text-sm"
                   >
                     {editLinkCopied ? 'COPIED!' : 'COPY LINK'}
                   </button>
                   <Link
                     href={`/edit?token=${editToken}`}
-                    className="flex items-center justify-center px-4 py-3 bg-foreground text-background font-bold hover:bg-accent hover:text-foreground transition-colors text-sm"
+                    className="flex items-center justify-center px-3 py-3 md:px-4 md:py-3 bg-foreground text-background font-bold hover:bg-accent hover:text-foreground transition-colors text-xs md:text-sm"
                   >
                     <Edit className="w-4 h-4" />
                   </Link>
@@ -345,11 +352,11 @@ END:VCARD`
             )}
 
             {showQR && (
-              <div className="mt-6 p-4 bg-background border-2 border-foreground">
-                <div className="flex justify-center p-4 bg-white">
+              <div className="mt-4 md:mt-6 p-3 md:p-4 bg-background border-2 border-foreground rounded-lg">
+                <div className="flex justify-center p-3 md:p-4 bg-white rounded-lg">
                   <QRCodeSVG
-                    value={window.location.href}
-                    size={180}
+                    value={currentUrl}
+                    size={Math.min(180, window.innerWidth - 60)}
                     level="H"
                     includeMargin
                   />
@@ -360,7 +367,7 @@ END:VCARD`
           </div>
         </div>
 
-        <p className="text-center mono text-xs text-foreground/30 mt-6">
+        <p className="text-center mono text-xs text-foreground/30 mt-4 md:mt-6">
           MADE WITH CLICKSHARE
         </p>
       </div>

@@ -3,8 +3,9 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getSupabaseClient } from '@/lib/supabase'
-import { Upload, ArrowLeft } from 'lucide-react'
+import { Upload } from 'lucide-react'
 import Link from 'next/link'
+import { Profile } from '@/types'
 
 function EditCardContent() {
   const router = useRouter()
@@ -13,7 +14,7 @@ function EditCardContent() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [profile, setProfile] = useState<any>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [formData, setFormData] = useState({
     full_name: '',
     job_title: '',
@@ -128,6 +129,12 @@ function EditCardContent() {
         imageUrl = publicUrl
       }
 
+      if (!profile) {
+        alert('Profile not found')
+        setSaving(false)
+        return
+      }
+
       const { error: updateError } = await supabase
         .from('profiles')
         .update({
@@ -190,29 +197,29 @@ function EditCardContent() {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4">
+    <div className="min-h-screen py-6 px-3 md:py-12 md:px-4">
       <div className="max-w-2xl mx-auto">
         <Link
-          href={`/${profile.slug}`}
-          className="inline-flex items-center gap-2 text-sm mono text-foreground/40 hover:text-foreground transition-colors mb-8"
+          href={`/${profile?.slug}`}
+          className="inline-flex items-center gap-2 text-xs md:text-sm mono text-foreground/40 hover:text-foreground transition-colors mb-6 md:mb-8"
         >
           <span className="w-8 h-8 border border-foreground/20 flex items-center justify-center">←</span>
           <span>BACK</span>
         </Link>
 
-        <div className="border-2 border-foreground bg-card">
-          <div className="p-6 border-b-2 border-foreground">
-            <div className="display-text">EDIT CARD</div>
+        <div className="border-2 border-foreground bg-card rounded-lg md:rounded-none">
+          <div className="p-4 md:p-6 border-b-2 border-foreground">
+            <div className="text-xl md:display-text">EDIT CARD</div>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-8">
+          <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-6 md:space-y-8">
             <div className="flex flex-col items-center">
               <div className="relative mb-4">
-                <div className="w-28 h-28 rounded-full overflow-hidden bg-foreground/5 border-2 border-foreground flex items-center justify-center">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-foreground/5 border-2 border-foreground flex items-center justify-center">
                   {previewImage ? (
                     <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-5xl font-black text-foreground/20">?</span>
+                    <span className="text-4xl md:text-5xl font-black text-foreground/20">?</span>
                   )}
                 </div>
                 <label className="absolute bottom-0 right-0 w-10 h-10 bg-accent rounded-full flex items-center justify-center cursor-pointer hover:opacity-90 border-2 border-foreground">
@@ -228,20 +235,20 @@ function EditCardContent() {
 
               <div className="w-full">
                 <label className="block mono text-xs text-foreground/40 mb-2">YOUR LINK</label>
-                <div className="flex items-center bg-foreground/5 border-2 border-foreground">
-                  <span className="px-4 py-3 font-mono text-sm text-foreground/40">/</span>
+                <div className="flex items-center bg-foreground/5 border-2 border-foreground rounded-lg overflow-hidden">
+                  <span className="px-3 py-3 md:px-4 md:py-3 font-mono text-sm text-foreground/40">/</span>
                   <input
                     type="text"
-                    value={profile.slug}
+                    value={profile?.slug}
                     disabled
-                    className="flex-1 px-2 py-3 bg-transparent font-mono text-sm focus:outline-none opacity-50"
+                    className="flex-1 px-2 py-3 md:px-2 md:py-3 bg-transparent font-mono text-sm focus:outline-none opacity-50"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-5 md:space-y-6">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                 <div className="space-y-2">
                   <label className="block font-bold text-sm">NAME</label>
                   <input
@@ -249,7 +256,7 @@ function EditCardContent() {
                     required
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium"
+                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium rounded-lg"
                     placeholder="YOUR NAME"
                   />
                 </div>
@@ -261,7 +268,7 @@ function EditCardContent() {
                     required
                     value={formData.job_title}
                     onChange={(e) => setFormData({ ...formData, job_title: e.target.value })}
-                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium"
+                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium rounded-lg"
                     placeholder="WHAT YOU DO"
                   />
                 </div>
@@ -272,7 +279,7 @@ function EditCardContent() {
                     type="text"
                     value={formData.company}
                     onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium"
+                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium rounded-lg"
                     placeholder="WHERE YOU WORK"
                   />
                 </div>
@@ -284,7 +291,7 @@ function EditCardContent() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium"
+                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium rounded-lg"
                     placeholder="EMAIL@EXAMPLE.COM"
                   />
                 </div>
@@ -296,7 +303,7 @@ function EditCardContent() {
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium"
+                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium rounded-lg"
                     placeholder="+1 555 000 0000"
                   />
                 </div>
@@ -307,7 +314,7 @@ function EditCardContent() {
                     type="url"
                     value={formData.website}
                     onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium"
+                    className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-medium rounded-lg"
                     placeholder="HTTPS://YOURSITE.COM"
                   />
                 </div>
@@ -319,76 +326,76 @@ function EditCardContent() {
                   rows={3}
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors resize-none font-medium"
+                  className="w-full px-4 py-4 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors resize-none font-medium rounded-lg"
                   placeholder="TELL PEOPLE ABOUT YOURSELF..."
                 />
               </div>
 
               <div className="space-y-3">
                 <label className="block font-bold text-sm">LINKS</label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
                   <input
                     type="url"
                     placeholder="LINKEDIN"
                     value={formData.linkedin}
                     onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm"
+                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm rounded-lg"
                   />
                   <input
                     type="url"
                     placeholder="TWITTER"
                     value={formData.twitter}
                     onChange={(e) => setFormData({ ...formData, twitter: e.target.value })}
-                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm"
+                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm rounded-lg"
                   />
                   <input
                     type="url"
                     placeholder="GITHUB"
                     value={formData.github}
                     onChange={(e) => setFormData({ ...formData, github: e.target.value })}
-                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm"
+                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm rounded-lg"
                   />
                   <input
                     type="url"
                     placeholder="INSTAGRAM"
                     value={formData.instagram}
                     onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
-                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm"
+                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm rounded-lg"
                   />
                   <input
                     type="url"
                     placeholder="MASTODON"
                     value={formData.mastodon}
                     onChange={(e) => setFormData({ ...formData, mastodon: e.target.value })}
-                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm"
+                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm rounded-lg"
                   />
                   <input
                     type="url"
                     placeholder="BLUESKY"
                     value={formData.bluesky}
                     onChange={(e) => setFormData({ ...formData, bluesky: e.target.value })}
-                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm"
+                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm rounded-lg"
                   />
                   <input
                     type="url"
                     placeholder="WHATSAPP"
                     value={formData.whatsapp}
                     onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm"
+                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm rounded-lg"
                   />
                   <input
                     type="url"
                     placeholder="SIGNAL"
                     value={formData.signal}
                     onChange={(e) => setFormData({ ...formData, signal: e.target.value })}
-                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm"
+                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm rounded-lg"
                   />
                   <input
                     type="url"
                     placeholder="TELEGRAM"
                     value={formData.telegram}
                     onChange={(e) => setFormData({ ...formData, telegram: e.target.value })}
-                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm"
+                    className="w-full px-4 py-3 bg-foreground/5 border-2 border-foreground focus:bg-foreground/10 focus:outline-none transition-colors font-mono text-sm rounded-lg md:col-span-2"
                   />
                 </div>
               </div>
@@ -397,7 +404,7 @@ function EditCardContent() {
             <button
               type="submit"
               disabled={saving}
-              className="w-full flex items-center justify-center gap-2 px-6 py-5 bg-foreground text-background font-bold text-lg hover:bg-accent hover:text-foreground transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 md:py-5 bg-foreground text-background font-bold text-base md:text-lg hover:bg-accent hover:text-foreground transition-colors rounded-lg touch-manipulation"
             >
               {saving ? (
                 <span className="mono">SAVING...</span>
