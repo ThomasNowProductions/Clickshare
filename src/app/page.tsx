@@ -47,7 +47,7 @@ export default function Home() {
           </div>
 
           <p className="text-base md:text-xl lg:text-2xl font-medium text-foreground/60 mb-8 md:mb-12 max-w-xl">
-            A link in bio. But honest. No algorithms. No tracking. No engagement metrics. Just you.
+            A link in bio. But honest.
           </p>
 
           <form onSubmit={handleSearch} className="max-w-lg mb-8 md:mb-12">
