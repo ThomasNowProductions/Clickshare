@@ -191,107 +191,107 @@ END:VCARD`
                   <span className="font-medium truncate">{profile.website.replace(/^https?:\/\//, '')}</span>
                 </a>
               )}
-            </div>
 
-            {(socialLinks.linkedin || socialLinks.twitter || socialLinks.github || socialLinks.instagram || socialLinks.mastodon || socialLinks.bluesky || socialLinks.whatsapp || socialLinks.signal || socialLinks.telegram) && (
-              <div className="flex gap-2 mt-6 flex-wrap">
-                {socialLinks.linkedin && (
-                  <a
-                    href={socialLinks.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center bg-foreground text-background hover:bg-accent hover:text-foreground transition-colors"
-                  >
-                    <Linkedin className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.twitter && (
-                  <a
-                    href={socialLinks.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center bg-foreground text-background hover:bg-accent hover:text-foreground transition-colors"
-                  >
-                    <Twitter className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.github && (
-                  <a
-                    href={socialLinks.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center bg-foreground text-background hover:bg-accent hover:text-foreground transition-colors"
-                  >
-                    <Github className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.instagram && (
-                  <a
-                    href={socialLinks.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center bg-foreground text-background hover:bg-accent hover:text-foreground transition-colors"
-                  >
-                    <Instagram className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.mastodon && (
-                  <a
-                    href={socialLinks.mastodon}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center bg-foreground text-background hover:bg-accent hover:text-foreground transition-colors"
-                    title="Mastodon"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.bluesky && (
-                  <a
-                    href={socialLinks.bluesky}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center bg-foreground text-background hover:bg-accent hover:text-foreground transition-colors"
-                    title="Bluesky"
-                  >
-                    <Globe className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.whatsapp && (
-                  <a
-                    href={socialLinks.whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center bg-foreground text-background hover:bg-accent hover:text-foreground transition-colors"
-                    title="WhatsApp"
-                  >
-                    <MessageSquare className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.signal && (
-                  <a
-                    href={socialLinks.signal}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center bg-foreground text-background hover:bg-accent hover:text-foreground transition-colors"
-                    title="Signal"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                  </a>
-                )}
-                {socialLinks.telegram && (
-                  <a
-                    href={socialLinks.telegram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-12 h-12 flex items-center justify-center bg-foreground text-background hover:bg-accent hover:text-foreground transition-colors"
-                    title="Telegram"
-                  >
-                    <Send className="w-5 h-5" />
-                  </a>
-                )}
-              </div>
-            )}
+              {socialLinks.linkedin && (
+                <a
+                  href={socialLinks.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                >
+                  <Linkedin className="w-5 h-5" />
+                  <span className="font-medium">LinkedIn</span>
+                </a>
+              )}
+              {socialLinks.twitter && (
+                <a
+                  href={socialLinks.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                >
+                  <Twitter className="w-5 h-5" />
+                  <span className="font-medium">Twitter</span>
+                </a>
+              )}
+              {socialLinks.github && (
+                <a
+                  href={socialLinks.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                >
+                  <Github className="w-5 h-5" />
+                  <span className="font-medium">GitHub</span>
+                </a>
+              )}
+              {socialLinks.instagram && (
+                <a
+                  href={socialLinks.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                >
+                  <Instagram className="w-5 h-5" />
+                  <span className="font-medium">Instagram</span>
+                </a>
+              )}
+              {socialLinks.mastodon && (
+                <a
+                  href={socialLinks.mastodon}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  <span className="font-medium">Mastodon</span>
+                </a>
+              )}
+              {socialLinks.bluesky && (
+                <a
+                  href={socialLinks.bluesky}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                >
+                  <Globe className="w-5 h-5" />
+                  <span className="font-medium">Bluesky</span>
+                </a>
+              )}
+              {socialLinks.whatsapp && (
+                <a
+                  href={socialLinks.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  <span className="font-medium">WhatsApp</span>
+                </a>
+              )}
+              {socialLinks.signal && (
+                <a
+                  href={socialLinks.signal}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                >
+                  <Send className="w-5 h-5" />
+                  <span className="font-medium">Signal</span>
+                </a>
+              )}
+              {socialLinks.telegram && (
+                <a
+                  href={socialLinks.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3 bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                >
+                  <Send className="w-5 h-5" />
+                  <span className="font-medium">Telegram</span>
+                </a>
+              )}
+            </div>
 
             <div className="flex gap-2 mt-6">
               <button
