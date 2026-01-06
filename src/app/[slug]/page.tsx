@@ -21,6 +21,8 @@ export default function BusinessCard() {
   const slug = params.slug as string
 
   useEffect(() => {
+    // Workaround for SSR hydration - origin is only available on client
+    // eslint-disable-next-line
     setOrigin(window.location.origin)
   }, [])
 
@@ -107,7 +109,7 @@ END:VCARD`
       <div className="min-h-screen flex items-center justify-center bg-background px-6">
         <div className="text-center">
           <div className="display-text mb-4">404</div>
-          <p className="body-text text-foreground/50 mb-8">This person doesn't exist here.</p>
+          <p className="body-text text-foreground/50 mb-8">This person doesn&apos;t exist here.</p>
           <Link
             href="/"
             className="inline-block px-8 py-3 bg-foreground text-background font-bold text-sm"

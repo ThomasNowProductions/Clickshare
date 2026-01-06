@@ -10,6 +10,8 @@ export default function Home() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // Workaround for SSR hydration
+    // eslint-disable-next-line
     setMounted(true)
   }, [])
 
@@ -69,9 +71,9 @@ export default function Home() {
           </form>
 
           <div className="flex flex-wrap gap-x-4 md:gap-x-8 gap-y-2 text-xs mono text-foreground/40">
-            <span>// FREE</span>
-            <span>// NO ACCOUNT</span>
-            <span>// YOUR DATA</span>
+            <span>{'// FREE'}</span>
+            <span>{'// NO ACCOUNT'}</span>
+            <span>{'// YOUR DATA'}</span>
           </div>
         </div>
       </main>
