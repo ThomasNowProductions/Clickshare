@@ -138,13 +138,14 @@ END:VCARD`
 
         <div className="border-2 border-foreground bg-card">
           <div className="h-28 md:h-32 bg-foreground/5 flex items-end p-4 md:p-6">
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-background bg-foreground/10 -mb-8 md:-mb-10 overflow-hidden">
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-background bg-foreground/10 -mb-8 md:-mb-10 overflow-hidden pointer-events-none">
               {profile.profile_image ? (
                 <Image
                   src={profile.profile_image}
                   alt={profile.full_name}
                   fill
                   className="object-cover"
+                  priority
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-2xl md:text-3xl font-bold">
