@@ -5,60 +5,33 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Mail, Phone, Globe, Linkedin, Twitter, Github, Instagram, Download, Share2, Edit, Lock, MessageCircle, Send, MessageSquare, Users, QrCode } from 'lucide-react'
-import { getSupabaseClient } from '@/lib/supabase'
-import { Profile } from '@/types'
 import { useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { useQuery, useMutation } from 'convex/react'
+import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
 
 export default function BusinessCard() {
   const params = useParams()
   const searchParams = useSearchParams()
   const editToken = searchParams.get('edit_token')
-  const [profile, setProfile] = useState<Profile | null>(null)
-  const [loading, setLoading] = useState(true)
+  const slug = params.slug as string
+  
+  const profile = useQuery(api.profiles.getBySlug, { slug })
+  const incrementVisits = useMutation(api.profilesMutations.incrementVisits)
+  
+  const loading = profile === undefined
   const [showQR, setShowQR] = useState(false)
   const [editLinkCopied, setEditLinkCopied] = useState(false)
   const [shareLinkCopied, setShareLinkCopied] = useState(false)
-  const [origin, setOrigin] = useState('')
-  const slug = params.slug as string
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
 
   useEffect(() => {
-    // Workaround for SSR hydration - origin is only available on client
-    // eslint-disable-next-line
-    setOrigin(window.location.origin)
-  }, [])
-
-  useEffect(() => {
-    async function fetchProfile() {
-      const supabase = getSupabaseClient()
-
-      if (!supabase) {
-        setLoading(false)
-        return
-      }
-
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('slug', slug)
-        .single()
-
-      if (data) {
-        setProfile(data)
-
-        await supabase
-          .from('profiles')
-          .update({ visits: (data.visits || 0) + 1 })
-          .eq('id', data.id)
-      }
-
-      setLoading(false)
+    if (profile) {
+      incrementVisits({ id: profile._id as Id<'profiles'> })
     }
-
-    if (slug) {
-      fetchProfile()
-    }
-  }, [slug])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?._id])
 
   const copyEditLink = () => {
     if (!profile?.edit_token) return

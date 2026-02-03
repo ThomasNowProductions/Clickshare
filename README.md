@@ -11,7 +11,7 @@ A modern, responsive Next.js application for creating and sharing digital busine
 - **Analytics**: Track profile visits and QR code scans
 - **Dark/Light Themes**: Built-in theme support with custom color options
 - **Responsive Design**: Works perfectly on mobile, tablet, and desktop
-- **Supabase Backend**: Secure data persistence and storage
+- **Convex Backend**: Real-time data with automatic synchronization
 - **Vercel Deployment**: One-click deployment with custom URLs
 
 ## Tech Stack
@@ -19,8 +19,8 @@ A modern, responsive Next.js application for creating and sharing digital busine
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Database**: Supabase (PostgreSQL)
-- **Storage**: Supabase Storage
+- **Database**: Convex (Real-time backend)
+- **Storage**: Base64 image encoding (embedded in database)
 - **UI Components**: Lucide React Icons
 - **QR Codes**: QRCode.react
 - **Theming**: next-themes
@@ -30,7 +30,7 @@ A modern, responsive Next.js application for creating and sharing digital busine
 ### Prerequisites
 
 - Node.js 18+ installed
-- A Supabase account (free tier works)
+- A Convex account (free tier works)
 
 ### 1. Clone the Repository
 
@@ -45,14 +45,12 @@ cd Clickshare
 npm install
 ```
 
-### 3. Set Up Supabase
+### 3. Set Up Convex
 
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to Settings > API and copy:
-   - Project URL
-   - anon/public key
-3. Create a storage bucket named `profiles` in the Supabase dashboard
-4. Run the SQL migration in `supabase/migrations/001_initial_schema.sql` in your Supabase SQL editor
+1. Install the Convex CLI: `npm install -g convex`
+2. Run `npx convex dev` to start the Convex development server
+3. This will automatically create a Convex project and generate the necessary files
+4. The schema is automatically deployed from `convex/schema.ts`
 
 ### 4. Configure Environment Variables
 
@@ -62,13 +60,13 @@ Create a `.env.local` file:
 cp .env.local.example .env.local
 ```
 
-Edit `.env.local` with your Supabase credentials:
+Edit `.env.local` with your Convex URL:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_CONVEX_URL=your_convex_url
 ```
+
+The Convex URL will be provided when you run `npx convex dev` for the first time.
 
 ### 5. Run Development Server
 
@@ -101,7 +99,7 @@ You can:
 
 ### Analytics
 
-View your profile's analytics in the Supabase dashboard or extend the app to show them in the UI.
+View your profile's analytics in the Convex dashboard or extend the app to show them in the UI.
 
 ## Deployment
 
@@ -148,15 +146,22 @@ src/
 ├── app/
 │   ├── [slug]/page.tsx      # Dynamic card pages
 │   ├── create/page.tsx       # Card creation form
-│   ├── layout.tsx            # Root layout with theme provider
+│   ├── edit/page.tsx         # Card editing form
+│   ├── layout.tsx            # Root layout with providers
 │   ├── page.tsx              # Homepage
 │   └── globals.css           # Global styles
 ├── components/
-│   └── theme-provider.tsx    # Theme provider component
+│   ├── theme-provider.tsx    # Theme provider component
+│   └── ConvexClientProvider.tsx # Convex provider
 ├── lib/
-│   └── supabase.ts           # Supabase client
+│   └── (empty)               # Utilities directory
 └── types/
     └── index.ts              # TypeScript types
+
+convex/
+├── schema.ts                 # Database schema
+├── profiles.ts               # Profile queries
+└── profilesMutations.ts      # Profile mutations
 ```
 
 ## Future Enhancements

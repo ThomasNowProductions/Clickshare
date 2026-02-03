@@ -4,19 +4,22 @@ import Image from 'next/image'
 
 import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { getSupabaseClient } from '@/lib/supabase'
 import { Upload } from 'lucide-react'
 import Link from 'next/link'
-import { Profile } from '@/types'
+import { useQuery, useMutation } from 'convex/react'
+import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
 
 function EditCardContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
+  const profile = useQuery(api.profiles.getByEditToken, token ? { token } : 'skip')
+  const updateProfile = useMutation(api.profilesMutations.update)
+  
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
   const [formData, setFormData] = useState({
     full_name: '',
     job_title: '',
@@ -35,68 +38,55 @@ function EditCardContent() {
     signal: '',
     telegram: '',
   })
-  const [profileImage, setProfileImage] = useState<File | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
 
   useEffect(() => {
-    async function fetchProfile() {
-      const supabase = getSupabaseClient()
-
-      if (!supabase) {
-        setError('Please configure Supabase environment variables')
-        setLoading(false)
-        return
-      }
-
-      if (!token) {
-        setError('Invalid edit link')
-        setLoading(false)
-        return
-      }
-
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('edit_token', token)
-        .single()
-
-      if (!data) {
-        setError('Profile not found or invalid edit link')
-        setLoading(false)
-        return
-      }
-
-      setProfile(data)
-      setFormData({
-        full_name: data.full_name,
-        job_title: data.job_title,
-        company: data.company,
-        bio: data.bio,
-        email: data.email,
-        phone: data.phone,
-        website: data.website || '',
-        linkedin: data.social_links?.linkedin || '',
-        twitter: data.social_links?.twitter || '',
-        github: data.social_links?.github || '',
-        instagram: data.social_links?.instagram || '',
-        mastodon: data.social_links?.mastodon || '',
-        bluesky: data.social_links?.bluesky || '',
-        whatsapp: data.social_links?.whatsapp || '',
-        signal: data.social_links?.signal || '',
-        telegram: data.social_links?.telegram || '',
-      })
-      setPreviewImage(data.profile_image)
-      setLoading(false)
+    if (profile === undefined) {
+      return
     }
 
-    fetchProfile()
-  }, [token])
+    if (!token) {
+      setError('Invalid edit link')
+      setLoading(false)
+      return
+    }
+
+    if (!profile) {
+      setError('Profile not found or invalid edit link')
+      setLoading(false)
+      return
+    }
+
+    setFormData({
+      full_name: profile.full_name,
+      job_title: profile.job_title,
+      company: profile.company,
+      bio: profile.bio,
+      email: profile.email,
+      phone: profile.phone,
+      website: profile.website || '',
+      linkedin: profile.social_links?.linkedin || '',
+      twitter: profile.social_links?.twitter || '',
+      github: profile.social_links?.github || '',
+      instagram: profile.social_links?.instagram || '',
+      mastodon: profile.social_links?.mastodon || '',
+      bluesky: profile.social_links?.bluesky || '',
+      whatsapp: profile.social_links?.whatsapp || '',
+      signal: profile.social_links?.signal || '',
+      telegram: profile.social_links?.telegram || '',
+    })
+    setPreviewImage(profile.profile_image || null)
+    setLoading(false)
+  }, [profile, token])
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      setProfileImage(file)
-      setPreviewImage(URL.createObjectURL(file))
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
   }
 
@@ -104,65 +94,35 @@ function EditCardContent() {
     e.preventDefault()
     setSaving(true)
 
-    const supabase = getSupabaseClient()
-
-    if (!supabase) {
-      alert('Please configure Supabase environment variables')
+    if (!profile) {
+      alert('Profile not found')
       setSaving(false)
       return
     }
 
     try {
-      let imageUrl = profile?.profile_image
-
-      if (profileImage) {
-        const fileExt = profileImage.name.split('.').pop()
-        const fileName = `${Math.random()}.${fileExt}`
-        const { error: uploadError } = await supabase.storage
-          .from('profiles')
-          .upload(fileName, profileImage)
-
-        if (uploadError) throw uploadError
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('profiles')
-          .getPublicUrl(fileName)
-
-        imageUrl = publicUrl
-      }
-
-      if (!profile) {
-        alert('Profile not found')
-        setSaving(false)
-        return
-      }
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({
-          full_name: formData.full_name,
-          job_title: formData.job_title,
-          company: formData.company,
-          bio: formData.bio,
-          email: formData.email,
-          phone: formData.phone,
-          website: formData.website || null,
-          profile_image: imageUrl,
-          social_links: {
-            linkedin: formData.linkedin || undefined,
-            twitter: formData.twitter || undefined,
-            github: formData.github || undefined,
-            instagram: formData.instagram || undefined,
-            mastodon: formData.mastodon || undefined,
-            bluesky: formData.bluesky || undefined,
-            whatsapp: formData.whatsapp || undefined,
-            signal: formData.signal || undefined,
-            telegram: formData.telegram || undefined,
-          },
-        })
-        .eq('id', profile.id)
-
-      if (updateError) throw updateError
+      await updateProfile({
+        id: profile._id as Id<'profiles'>,
+        full_name: formData.full_name,
+        job_title: formData.job_title,
+        company: formData.company,
+        bio: formData.bio,
+        email: formData.email,
+        phone: formData.phone,
+        website: formData.website || undefined,
+        profile_image: previewImage || undefined,
+        social_links: {
+          linkedin: formData.linkedin || undefined,
+          twitter: formData.twitter || undefined,
+          github: formData.github || undefined,
+          instagram: formData.instagram || undefined,
+          mastodon: formData.mastodon || undefined,
+          bluesky: formData.bluesky || undefined,
+          whatsapp: formData.whatsapp || undefined,
+          signal: formData.signal || undefined,
+          telegram: formData.telegram || undefined,
+        },
+      })
 
       router.push(`/${profile.slug}`)
     } catch (error) {
